@@ -42,7 +42,7 @@ services:
     container_name: stf-app
     env_file:
      - variables.env
-    command: stf app --port 3000 --auth-url http://${STF_HOST}/auth/mock/ --websocket-url http://${STF_HOST}/
+    command: stf app --port 3000 --auth-url http://${STF_HOST}/auth/ldap/ --websocket-url http://${STF_HOST}/
     depends_on:
      - "rethinkdb"
     restart: always
@@ -52,7 +52,8 @@ services:
     env_file:
      - variables.env
     # http://${STF_HOST}/stf/ with slash at the end produce invalid redirect! /stf/?jwt=e...
-    command: stf auth-mock --port 3000 --app-url http://${STF_HOST}/stf
+    # command: stf auth-mock --port 3000 --app-url http://${STF_HOST}/stf
+    command: stf auth-ldap --port 3000 --app-url http://${STF_HOST}/stf --ldap-url ${LDAP_URL_HERE} --ldap-bind-dn cn=jira,ou=users,ou=service,dc=pyn,dc=ru --ldap-bind-credentials ${LDAP_PASSWORD_HERE} --ldap-search-dn ou=Offices,dc=pyn,dc=ru --ldap-search-scope sub --ldap-search-field sAMAccountName
     depends_on:
      - "rethinkdb"
     restart: always
